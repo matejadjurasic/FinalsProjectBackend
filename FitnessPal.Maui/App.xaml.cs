@@ -1,13 +1,26 @@
-﻿namespace FitnessPal.Maui
+﻿using Microsoft.Extensions.Configuration;
+
+namespace FitnessPal.Maui
 {
     public partial class App : Application
     {
         public App()
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NBaF1cXmhMYVJ+WmFZfVpgdVdMY19bQHdPIiBoS35RckVmWH5fcndWQmFUUkB3");
+            var config = LoadConfiguration();
+            var licenseKey = config.GetValue<string>("SyncfusionLicence");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
             InitializeComponent();
 
             MainPage = new AppShell();
+        }
+
+        private IConfiguration LoadConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(FileSystem.AppDataDirectory)
+                .AddUserSecrets<App>();
+
+            return builder.Build();
         }
     }
 }
