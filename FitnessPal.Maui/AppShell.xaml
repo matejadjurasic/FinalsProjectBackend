@@ -28,5 +28,8 @@
             ContentTemplate="{DataTemplate local:ProfilePage}"
             Icon="{OnPlatform 'diary.png', iOS='diary.png'}"
             Route="Profile" />
+
     </TabBar>
+
+
 </Shell>

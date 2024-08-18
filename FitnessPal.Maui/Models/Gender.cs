@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FitnessPal.Maui.Models
 {
-    enum Gender
+    public enum Gender
     {
         Male,
         Female
