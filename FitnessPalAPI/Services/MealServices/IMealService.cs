@@ -9,6 +9,6 @@ namespace FitnessPalAPI.Services.MealServices
         Task<MealReadDto> GetMealByIdAsync(int userId, int mealId);
         Task<MealReadDto> CreateMealAsync(int userId, MealCreateDto mealDto);
         Task<MealReadDto> UpdateMealAsync(int userId, int mealId, MealUpdateDto mealDto);
-        Task<bool> DeleteMealAsync(int userId, int mealId);
+        Task DeleteMealAsync(int userId, int mealId);
     }
 }

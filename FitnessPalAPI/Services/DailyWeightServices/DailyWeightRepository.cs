@@ -55,16 +55,10 @@ namespace FitnessPalAPI.Services.DailyWeightServices
                 throw;
             }
         }
-        public async Task<bool> DeleteWeightAsync(int userId, int id)
+        public async Task DeleteWeightAsync(DailyWeight dailyWeight)
         {
-            var dailyWeight = await GetWeightByIdAsync(userId, id);
-            if (dailyWeight == null)
-            {
-                return false;
-            }
             _context.DailyWeights.Remove(dailyWeight);
             await _context.SaveChangesAsync();
-            return true;
         }
     }
 }

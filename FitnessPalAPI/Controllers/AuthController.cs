@@ -28,19 +28,7 @@ namespace FitnessPalAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var userExists = await _authService.UserExistsByEmailAsync(model.Email);
-            if (userExists)
-            {
-                return BadRequest("User already exists");
-            }
-
-            var result = await _authService.RegisterUserAsync(model);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
+            await _authService.RegisterUserAsync(model);
             return Ok("User registered successfully");
         }
 
@@ -49,11 +37,6 @@ namespace FitnessPalAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var authResponse = await _authService.AuthenticateUserAsync(model);
-            if (authResponse == null)
-            {
-                return Unauthorized("Invalid username or password");
-            }
-
             return Ok(authResponse);
         }
 

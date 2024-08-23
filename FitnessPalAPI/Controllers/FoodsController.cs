@@ -34,7 +34,6 @@ namespace FitnessPalAPI.Controllers
         public async Task<ActionResult<FoodReadDto>> GetFood(int id)
         {
             var food = await _foodService.GetFoodByIdAsync(id);
-            if (food == null) return NotFound();
             return Ok(food);
         }
 
@@ -48,7 +47,7 @@ namespace FitnessPalAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFood(int id, FoodUpdateDto foodDto)
         {
-            FoodReadDto food = await _foodService.UpdateFoodAsync(id, foodDto);
+            var food = await _foodService.UpdateFoodAsync(id, foodDto);
             return Ok(food);
         }
 
@@ -56,7 +55,7 @@ namespace FitnessPalAPI.Controllers
         public async Task<IActionResult> DeleteFood(int id)
         {
             await _foodService.DeleteFoodAsync(id);
-            return Ok("Food deleted successfully!");
+            return NoContent();
         }
     }
 }

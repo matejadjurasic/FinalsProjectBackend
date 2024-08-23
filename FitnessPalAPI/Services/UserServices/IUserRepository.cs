@@ -10,6 +10,6 @@ namespace FitnessPalAPI.Services.UserServices
         Task<IEnumerable<User>> GetAllAsync();
         Task<IdentityResult> AddAsync(User user, string password);
         Task<IdentityResult> UpdateAsync(User user);
-        Task<IdentityResult> DeleteAsync(int userId);
+        Task<IdentityResult> DeleteAsync(User user);
     }
 }

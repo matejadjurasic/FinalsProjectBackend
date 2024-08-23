@@ -17,7 +17,7 @@ namespace FitnessPalAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class MealsController : ControllerBase
+    public class MealsController : BaseController
     {
         private readonly IMealService _mealService;
 
@@ -29,70 +29,36 @@ namespace FitnessPalAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MealReadDto>>> GetMeals()
         {
-            int userId = GetUserIdFromToken();
-            var meals = await _mealService.GetAllMealsAsync(userId);
+            var meals = await _mealService.GetAllMealsAsync(CurrentUserId);
             return Ok(meals);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<MealReadDto>> GetMeal(int id)
         {
-            int userId = GetUserIdFromToken();
-            var meal = await _mealService.GetMealByIdAsync(userId, id);
-            if (meal == null)
-            {
-                return NotFound();
-            }
+            var meal = await _mealService.GetMealByIdAsync(CurrentUserId, id);
             return Ok(meal);
         }
 
         [HttpPost]
         public async Task<ActionResult<MealReadDto>> PostMeal(MealCreateDto mealDto)
         {
-            int userId = GetUserIdFromToken();
-            if (userId != mealDto.UserId)
-            {
-                return Unauthorized("Unauthorized to create meals for other users.");
-            }
-            var newMeal = await _mealService.CreateMealAsync(userId, mealDto);
+            var newMeal = await _mealService.CreateMealAsync(CurrentUserId, mealDto);
             return CreatedAtAction(nameof(GetMeal), new { id = newMeal.Id }, newMeal);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMeal(int id, MealUpdateDto mealDto)
         {
-            int userId = GetUserIdFromToken();
-            try
-            {
-                MealReadDto meal = await _mealService.UpdateMealAsync(userId, id, mealDto);
-                return Ok(meal);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            MealReadDto meal = await _mealService.UpdateMealAsync(CurrentUserId, id, mealDto);
+            return Ok(meal);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMeal(int id)
         {
-            int userId = GetUserIdFromToken();
-            bool success = await _mealService.DeleteMealAsync(userId, id);
-            if (!success)
-            {
-                return NotFound();
-            }
+            await _mealService.DeleteMealAsync(CurrentUserId, id);
             return Ok("Meal deleted successfully");
-        }
-
-        private int GetUserIdFromToken()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                throw new Exception("User ID not found in token.");
-            }
-            return int.Parse(userIdClaim.Value);
         }
     }
 }

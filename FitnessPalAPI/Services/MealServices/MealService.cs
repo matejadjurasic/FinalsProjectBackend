@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FitnessPalAPI.Exceptions;
 using FitnessPalAPI.Models.DatabaseModels;
 using FitnessPalAPI.Models.DataTransferModels.MealTransferModels;
 
@@ -23,8 +24,7 @@ namespace FitnessPalAPI.Services.MealServices
 
         public async Task<MealReadDto> GetMealByIdAsync(int userId, int mealId)
         {
-            var meal = await _repository.GetByIdAndUserIdAsync(mealId, userId);
-            if (meal == null) return null;
+            var meal = await _repository.GetByIdAndUserIdAsync(mealId, userId) ?? throw new NotFoundException("Meal not found");
             return _mapper.Map<MealReadDto>(meal);
         }
 
@@ -36,29 +36,23 @@ namespace FitnessPalAPI.Services.MealServices
             }
 
             var meal = _mapper.Map<Meal>(mealDto);
-            meal.UserId = userId; // Ensuring the UserId is set correctly
+            meal.UserId = userId;
             await _repository.AddAsync(meal);
             return _mapper.Map<MealReadDto>(meal);
         }
 
         public async Task<MealReadDto> UpdateMealAsync(int userId, int mealId, MealUpdateDto mealDto)
         {
-            var meal = await _repository.GetByIdAndUserIdAsync(mealId, userId);
-            if (meal == null)
-                throw new InvalidOperationException("Meal not found.");
-
+            var meal = await _repository.GetByIdAndUserIdAsync(mealId, userId) ?? throw new NotFoundException("Meal not found.");
             _mapper.Map(mealDto, meal);
             await _repository.UpdateAsync(meal);
             return _mapper.Map<MealReadDto>(meal);
         }
 
-        public async Task<bool> DeleteMealAsync(int userId, int mealId)
+        public async Task DeleteMealAsync(int userId, int mealId)
         {
-            var meal = await _repository.GetByIdAndUserIdAsync(mealId, userId);
-            if (meal == null) return false;
-
+            var meal = await _repository.GetByIdAndUserIdAsync(mealId, userId) ?? throw new NotFoundException("Meal not found");
             await _repository.DeleteAsync(meal);
-            return true;
         }
     }
 }

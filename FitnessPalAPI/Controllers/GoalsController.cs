@@ -17,7 +17,7 @@ namespace FitnessPalAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class GoalsController : ControllerBase
+    public class GoalsController : BaseController
     {
         private readonly IGoalService _goalService;
 
@@ -29,73 +29,37 @@ namespace FitnessPalAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GoalReadDto>>> GetGoals()
         {
-            var userId = GetUserIdFromToken();
-            var goals = await _goalService.GetGoalsByUserIdAsync(userId);
+            var goals = await _goalService.GetGoalsByUserIdAsync(CurrentUserId);
             return Ok(goals);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<GoalReadDto>> GetGoal(int id)
         {
-            var userId = GetUserIdFromToken();
-            var goal = await _goalService.GetGoalByIdAsync(userId, id);
-            if (goal == null)
-            {
-                return NotFound();
-            }
+            var goal = await _goalService.GetGoalByIdAsync(CurrentUserId, id);
             return Ok(goal);
         }
 
         [HttpPost]
         public async Task<ActionResult<GoalReadDto>> PostGoal(GoalCreateDto createDto)
         {
-            var userId = GetUserIdFromToken();
-            try
-            {
-                var createdGoal = await _goalService.CreateGoalAsync(userId, createDto);
-                return CreatedAtAction(nameof(GetGoal), new { id = createdGoal.Id }, createdGoal);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var createdGoal = await _goalService.CreateGoalAsync(CurrentUserId, createDto);
+            return CreatedAtAction(nameof(GetGoal), new { id = createdGoal.Id }, createdGoal);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGoal(int id, GoalUpdateDto updateDto)
         {
-            var userId = GetUserIdFromToken();
-            try
-            {
-                GoalReadDto goal = await _goalService.UpdateGoalAsync(userId, id, updateDto);
-                return Ok(goal);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            var goal = await _goalService.UpdateGoalAsync(CurrentUserId, id, updateDto);
+            return Ok(goal);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGoal(int id)
         {
-            var userId = GetUserIdFromToken();
-            bool success = await _goalService.DeleteGoalAsync(userId, id);
-            if (!success)
-            {
-                return NotFound();
-            }
-            return Ok("Goal Deleted succesfully");
-        }
-
-        private int GetUserIdFromToken()
-        {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-            {
-                throw new Exception("User ID not found in token.");
-            }
-            return int.Parse(userIdClaim.Value);
+            await _goalService.DeleteGoalAsync(CurrentUserId, id);
+            return NoContent();
         }
     }    
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FitnessPalAPI.Models.DataTransferModels.DailyWeightTransferModels;
 using FitnessPalAPI.Models.DatabaseModels;
+using FitnessPalAPI.Exceptions;
 
 namespace FitnessPalAPI.Services.DailyWeightServices
 {
@@ -23,12 +24,8 @@ namespace FitnessPalAPI.Services.DailyWeightServices
 
         public async Task<DailyWeightReadDto> GetWeightByIdAsync(int userId, int weightId)
         {
-            var weight = await _repository.GetWeightByIdAsync(userId, weightId);
-            if (weight != null)
-            {
-                return _mapper.Map<DailyWeightReadDto>(weight);
-            }
-            return null;
+            var weight = await _repository.GetWeightByIdAsync(userId, weightId) ?? throw new NotFoundException("Weight not found.");
+            return _mapper.Map<DailyWeightReadDto>(weight);
         }
 
         public async Task<DailyWeightReadDto> CreateWeightAsync(int userId, DailyWeightCreateDto createDto)
@@ -39,34 +36,25 @@ namespace FitnessPalAPI.Services.DailyWeightServices
             }
 
             var dailyWeight = _mapper.Map<DailyWeight>(createDto);
-            dailyWeight.UserId = userId;  // Set user ID to ensure the weight is associated with the correct user.
+            dailyWeight.UserId = userId;  
 
             await _repository.AddWeightAsync(dailyWeight);
-            return _mapper.Map<DailyWeightReadDto>(dailyWeight);  // Return the created DailyWeight DTO.
+            return _mapper.Map<DailyWeightReadDto>(dailyWeight);
         }
 
         public async Task<DailyWeightReadDto> UpdateWeightAsync(int userId, int weightId, DailyWeightUpdateDto updateDto)
         {
-            var weight = await _repository.GetWeightByIdAsync(userId, weightId);
-            if (weight == null)
-            {
-                throw new KeyNotFoundException("Weight not found.");
-            }
+            var weight = await _repository.GetWeightByIdAsync(userId, weightId) ?? throw new NotFoundException("Weight not found.");
 
-            // Update the weight with new details from updateDto
             _mapper.Map(updateDto, weight);
             await _repository.UpdateWeightAsync(weight);
             return _mapper.Map<DailyWeightReadDto>(weight);
         }
 
-        public async Task<bool> DeleteWeightAsync(int userId, int weightId)
+        public async Task DeleteWeightAsync(int userId, int weightId)
         {
-            var success = await _repository.DeleteWeightAsync(userId, weightId);
-            if (!success)
-            {
-                throw new KeyNotFoundException("Weight not found or already removed.");
-            }
-            return true;
+            var dailyWeight = await _repository.GetWeightByIdAsync(userId, weightId) ?? throw new NotFoundException("Weight not found or already removed.");
+            await _repository.DeleteWeightAsync(dailyWeight);
         }
     }
 }

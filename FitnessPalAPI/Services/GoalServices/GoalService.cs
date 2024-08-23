@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FitnessPalAPI.Exceptions;
 using FitnessPalAPI.Models.DatabaseModels;
 using FitnessPalAPI.Models.DataTransferModels.GoalTransferModels;
 
@@ -23,7 +24,7 @@ namespace FitnessPalAPI.Services.GoalServices
 
         public async Task<GoalReadDto> GetGoalByIdAsync(int userId, int goalId)
         {
-            var goal = await _repository.GetByIdAsync(userId, goalId);
+            var goal = await _repository.GetByIdAsync(userId, goalId) ?? throw new NotFoundException("Goal not found");
             return _mapper.Map<GoalReadDto>(goal);
         }
 
@@ -35,34 +36,23 @@ namespace FitnessPalAPI.Services.GoalServices
             }
 
             var goal = _mapper.Map<Goal>(createDto);
-            goal.UserId = userId; // Ensure UserId is set correctly
+            goal.UserId = userId;
             await _repository.AddAsync(goal);
             return _mapper.Map<GoalReadDto>(goal);
         }
 
         public async Task<GoalReadDto> UpdateGoalAsync(int userId, int goalId, GoalUpdateDto updateDto)
         {
-            var goal = await _repository.GetByIdAsync(userId, goalId);
-            if (goal == null)
-            {
-                throw new KeyNotFoundException("Goal not found.");
-            }
-
+            var goal = await _repository.GetByIdAsync(userId, goalId) ?? throw new NotFoundException("Goal not found.");
             _mapper.Map(updateDto, goal);
             await _repository.UpdateAsync(goal);
             return _mapper.Map<GoalReadDto>(goal);
         }
 
-        public async Task<bool> DeleteGoalAsync(int userId, int goalId)
+        public async Task DeleteGoalAsync(int userId, int goalId)
         {
-            var goal = await _repository.GetByIdAsync(userId, goalId);
-            if (goal == null)
-            {
-                return false;
-            }
-
+            var goal = await _repository.GetByIdAsync(userId, goalId) ?? throw new NotFoundException("Goal not found");
             await _repository.DeleteAsync(goal);
-            return true;
         }
     }
 }

@@ -9,6 +9,6 @@ namespace FitnessPalAPI.Services.DailyWeightServices
         Task<bool> WeightExistsAsync(int userId, DateTime date);
         Task AddWeightAsync(DailyWeight dailyWeight);
         Task<bool> UpdateWeightAsync(DailyWeight dailyWeight);
-        Task<bool> DeleteWeightAsync(int userId, int id);
+        Task DeleteWeightAsync(DailyWeight dailyWeight);
     }
 }

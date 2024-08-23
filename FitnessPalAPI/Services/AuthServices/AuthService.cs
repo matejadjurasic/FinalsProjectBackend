@@ -1,5 +1,9 @@
-﻿using FitnessPalAPI.Models.DatabaseModels;
+﻿using AutoMapper;
+using FitnessPalAPI.Exceptions;
+using FitnessPalAPI.Models.DatabaseModels;
 using FitnessPalAPI.Models.DataTransferModels.AuthTransferModels;
+using FitnessPalAPI.Models.DataTransferModels.UserTransferModels;
+using FitnessPalAPI.Services.GoalServices;
 using FitnessPalAPI.Services.TokenServices;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
@@ -11,14 +15,18 @@ namespace FitnessPalAPI.Services.AuthServices
     {
         private readonly UserManager<User> _userManager;
         private readonly ITokenService _tokenService;
+        private readonly IGoalService _goalService;
+        private readonly IMapper _mapper;
 
-        public AuthService(UserManager<User> userManager, ITokenService tokenService)
+        public AuthService(UserManager<User> userManager, ITokenService tokenService, IGoalService goalService, IMapper mapper)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _goalService = goalService;
+            _mapper = mapper;
         }
 
-        public async Task<AuthResponse?> AuthenticateUserAsync(LoginModel loginModel)
+        public async Task<AuthResponse> AuthenticateUserAsync(LoginModel loginModel)
         {
             var user = await _userManager.FindByNameAsync(loginModel.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
@@ -28,8 +36,8 @@ namespace FitnessPalAPI.Services.AuthServices
                 return new AuthResponse
                 {
                     Id = user.Id,
-                    Username = user.UserName,
-                    Email = user.Email,
+                    Username = user.UserName ?? string.Empty,
+                    Email = user.Email ?? string.Empty,
                     Name = user.Name,
                     Height = user.Height,
                     Weight = user.Weight,
@@ -38,17 +46,17 @@ namespace FitnessPalAPI.Services.AuthServices
                     Token = token,
                 };
             }
-            return null;
+            throw new AuthenticationException("Invalid username or password");
         }
 
-        public async Task<bool> UserExistsByEmailAsync(string email)
+        public async Task RegisterUserAsync(RegisterModel model)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            return user != null;
-        }
+            var userExists = await _userManager.FindByEmailAsync(model.Email);
+            if (userExists != null)
+            {
+                throw new DuplicateEmailException("A user with this email already exists.");
+            }
 
-        public async Task<IdentityResult> RegisterUserAsync(RegisterModel model)
-        {
             var user = new User
             {
                 UserName = model.Username,
@@ -60,7 +68,15 @@ namespace FitnessPalAPI.Services.AuthServices
                 Gender = model.Gender
             };
 
-            return await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                throw new RegistrationException("Registration failed due to: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+
+            var userRead = _mapper.Map<UserReadDto>(user);
+
+            //await _goalService(userRead, model.GoalType);
         }
     }
 }

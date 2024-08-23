@@ -1,7 +1,6 @@
 ﻿namespace FitnessPalAPI.Models.DataTransferModels.MealItemTransferModels
 {
-    public class MealItemUpdateDto
+    public class MealItemUpdateDto : MealItemBaseDto
     {
-        public double Amount { get; set; }
     }
 }

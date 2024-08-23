@@ -43,7 +43,7 @@ namespace FitnessPalAPI.Data
             modelBuilder.Entity<Goal>(b =>
             {
                 b.HasOne(e => e.User)
-                .WithMany(e => e.Goal)
+                .WithMany(e => e.Goals)
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
             });

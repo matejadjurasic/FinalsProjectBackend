@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FitnessPalAPI.Exceptions;
 using FitnessPalAPI.Models.DatabaseModels;
 using FitnessPalAPI.Models.DataTransferModels.FoodTransferModels;
 
@@ -23,7 +24,7 @@ namespace FitnessPalAPI.Services.FoodServices
 
         public async Task<FoodReadDto> GetFoodByIdAsync(int foodId)
         {
-            var food = await _repository.GetByIdAsync(foodId);
+            var food = await _repository.GetByIdAsync(foodId) ?? throw new NotFoundException("Food not found");
             return _mapper.Map<FoodReadDto>(food);
         }
 
@@ -36,7 +37,7 @@ namespace FitnessPalAPI.Services.FoodServices
 
         public async Task<FoodReadDto> UpdateFoodAsync(int foodId, FoodUpdateDto foodDto)
         {
-            var food = await _repository.GetByIdAsync(foodId);
+            var food = await _repository.GetByIdAsync(foodId) ?? throw new NotFoundException("Food not found");
             _mapper.Map(foodDto, food);
             await _repository.UpdateAsync(food);
             return _mapper.Map<FoodReadDto>(food);
@@ -44,8 +45,7 @@ namespace FitnessPalAPI.Services.FoodServices
 
         public async Task DeleteFoodAsync(int foodId)
         {
-            var food = await _repository.GetByIdAsync(foodId);
-            if (food == null) throw new InvalidOperationException("Food not found.");
+            var food = await _repository.GetByIdAsync(foodId) ?? throw new InvalidOperationException("Food not found.");
             await _repository.DeleteAsync(food);
         }
     }

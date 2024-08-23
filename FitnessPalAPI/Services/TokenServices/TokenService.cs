@@ -1,5 +1,7 @@
-﻿using FitnessPalAPI.Models.DatabaseModels;
+﻿using FitnessPalAPI.Configuration;
+using FitnessPalAPI.Models.DatabaseModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,10 +13,12 @@ namespace FitnessPalAPI.Services.TokenServices
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
+        private readonly JwtSettings _jwtSettings;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(IConfiguration configuration, IOptions<JwtSettings> jwtSettings)
         {
             _configuration = configuration;
+            _jwtSettings = jwtSettings.Value;
         }
 
         public string GenerateToken(User user)
@@ -28,15 +32,15 @@ namespace FitnessPalAPI.Services.TokenServices
             new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Key));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpireMinutes"])),
-            signingCredentials: signIn
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinutes),
+                signingCredentials: signIn
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FitnessPalAPI.Exceptions;
 using FitnessPalAPI.Models.DatabaseModels;
 using FitnessPalAPI.Models.DataTransferModels.MealItemTransferModels;
 
@@ -23,7 +24,7 @@ namespace FitnessPalAPI.Services.MealItemServices
 
         public async Task<MealItemReadDto> GetMealItemByIdAsync(int mealId, int foodId)
         {
-            var mealItem = await _repository.GetByIdAsync(mealId,foodId);
+            var mealItem = await _repository.GetByIdAsync(mealId,foodId) ?? throw new NotFoundException("MealItem not found");
             return _mapper.Map<MealItemReadDto>(mealItem);
         }
 
@@ -36,11 +37,8 @@ namespace FitnessPalAPI.Services.MealItemServices
 
         public async Task<MealItemReadDto> UpdateMealItemAsync(int mealId,int foodId, MealItemUpdateDto mealItemDto)
         {
-            var mealItem = await _repository.GetByIdAsync(mealId,foodId);
-            if (mealItem == null)
-                throw new InvalidOperationException("MealItem not found.");
+            var mealItem = await _repository.GetByIdAsync(mealId,foodId) ?? throw new NotFoundException("MealItem not found.");
 
-            // Manually update the 'Amount' field since the DTO only contains this field.
             mealItem.Amount = mealItemDto.Amount;
 
             await _repository.UpdateAsync(mealItem);
@@ -49,10 +47,7 @@ namespace FitnessPalAPI.Services.MealItemServices
 
         public async Task DeleteMealItemAsync(int mealId,int foodId)
         {
-            var mealItem = await _repository.GetByIdAsync(mealId,foodId);
-            if (mealItem == null)
-                throw new InvalidOperationException("MealItem not found.");
-
+            var mealItem = await _repository.GetByIdAsync(mealId,foodId) ?? throw new NotFoundException("MealItem not found.");
             await _repository.DeleteAsync(mealItem);
         }
     }

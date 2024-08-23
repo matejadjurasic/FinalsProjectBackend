@@ -34,14 +34,9 @@ namespace FitnessPalAPI.Services.UserServices
             return await _userManager.UpdateAsync(user);
         }
 
-        public async Task<IdentityResult> DeleteAsync(int userId)
+        public async Task<IdentityResult> DeleteAsync(User user)
         {
-            var user = await GetByIdAsync(userId);
-            if (user != null)
-            {
-                return await _userManager.DeleteAsync(user);
-            }
-            return IdentityResult.Failed(new IdentityError { Description = "User not found." });
+            return await _userManager.DeleteAsync(user);
         }
     }
 }

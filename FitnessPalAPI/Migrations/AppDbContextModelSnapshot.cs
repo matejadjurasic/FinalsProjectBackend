@@ -61,13 +61,16 @@ namespace FitnessPalAPI.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<double>("Fat")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<double>("Protein")
                         .HasColumnType("float");
@@ -205,7 +208,8 @@ namespace FitnessPalAPI.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -401,7 +405,7 @@ namespace FitnessPalAPI.Migrations
             modelBuilder.Entity("FitnessPalAPI.Models.DatabaseModels.Goal", b =>
                 {
                     b.HasOne("FitnessPalAPI.Models.DatabaseModels.User", "User")
-                        .WithMany("Goal")
+                        .WithMany("Goals")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -490,7 +494,7 @@ namespace FitnessPalAPI.Migrations
                 {
                     b.Navigation("DailyWeights");
 
-                    b.Navigation("Goal");
+                    b.Navigation("Goals");
 
                     b.Navigation("Meals");
                 });

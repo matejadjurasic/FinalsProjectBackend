@@ -8,6 +8,6 @@ namespace FitnessPalAPI.Services.GoalServices
         Task<GoalReadDto> GetGoalByIdAsync(int userId, int goalId);
         Task<GoalReadDto> CreateGoalAsync(int userId, GoalCreateDto createDto);
         Task<GoalReadDto> UpdateGoalAsync(int userId, int goalId, GoalUpdateDto updateDto);
-        Task<bool> DeleteGoalAsync(int userId, int goalId);
+        Task DeleteGoalAsync(int userId, int goalId);
     }
 }
