@@ -1,0 +1,6 @@
+@FitnessPal.API_HostAddress = http://localhost:5277
+
+GET {{FitnessPal.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
