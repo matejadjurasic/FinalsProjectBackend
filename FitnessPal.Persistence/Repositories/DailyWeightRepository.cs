@@ -26,16 +26,11 @@ namespace FitnessPal.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public async Task<DailyWeight> GetDailyWeightByDateAsync(DateTime date, int userId)
+        public async Task<DailyWeight?> GetDailyWeightByDateAsync(DateTime date, int userId)
         {
-            var dailyWeight = await _appDbContext.DailyWeights
-                                    .Where(p => p.DateTime.Date == date.Date && p.UserId == userId)
-                                    .FirstOrDefaultAsync();
-
-            if (dailyWeight == null)
-                throw new NotFoundException(nameof(DailyWeight), date);
-
-            return dailyWeight;
+            return await _appDbContext.DailyWeights
+                     .Where(p => p.DateTime.Date == date.Date && p.UserId == userId)
+                     .FirstOrDefaultAsync();
         }
     }
 }

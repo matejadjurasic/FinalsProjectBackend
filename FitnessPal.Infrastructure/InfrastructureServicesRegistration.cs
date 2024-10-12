@@ -21,6 +21,7 @@ namespace FitnessPal.Infrastructure
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<INutritionCalculatorService, NutritionCalculatorService>();
             services.AddTransient<IAuthService, AuthService>();
 
             services.AddAuthentication(options =>

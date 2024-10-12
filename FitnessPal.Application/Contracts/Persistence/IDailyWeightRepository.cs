@@ -10,6 +10,6 @@ namespace FitnessPal.Application.Contracts.Persistence
     public interface IDailyWeightRepository : IGenericRepository<DailyWeight>
     {
         Task<List<DailyWeight>> GetDailyWeightsByUserIdAsync(int userId);
-        Task<DailyWeight> GetDailyWeightByDateAsync(DateTime date, int userId);
+        Task<DailyWeight?> GetDailyWeightByDateAsync(DateTime date, int userId);
     }
 }

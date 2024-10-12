@@ -25,7 +25,24 @@ namespace FitnessPal.Application.Features.MealItems.Handlers.Commands
         public async Task<int> Handle(CreateMealItemCommand request, CancellationToken cancellationToken)
         {
             var mealItem = _mapper.Map<MealItem>(request.MealItemCreateDto);
-            mealItem = await _unitOfWork.MealItemRepository.AddAsync(mealItem);
+            var ingredient = await _unitOfWork.IngredientRepository.GetAsync(mealItem.IngredientId);
+            var meal = await _unitOfWork.MealRepository.GetAsync(mealItem.MealId);
+
+            double amountFactor = mealItem.Amount / 100.0;
+
+            int caloriesContribution = (int)(ingredient.Calories * amountFactor);
+            double proteinContribution = ingredient.Protein * amountFactor;
+            double carbsContribution = ingredient.Carbs * amountFactor;
+            double fatContribution = ingredient.Fat * amountFactor;
+
+            meal.Calories += caloriesContribution;
+            meal.Protein += proteinContribution;
+            meal.Carbs += carbsContribution;
+            meal.Fat += fatContribution;
+
+            await _unitOfWork.MealItemRepository.AddAsync(mealItem);
+            await _unitOfWork.MealRepository.UpdateAsync(meal);
+
             await _unitOfWork.Save();
 
             return mealItem.IngredientId;
