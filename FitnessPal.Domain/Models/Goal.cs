@@ -17,6 +17,7 @@ namespace FitnessPal.Domain.Models
         public double TargetFats { get; set; }
         public double TargetWeight { get; set; }
         public GoalType Type { get; set; }
+        public ActivityLevel ActivityLevel { get; set; }
         public int UserId { get; set; }
         public User? User { get; set; }
     }

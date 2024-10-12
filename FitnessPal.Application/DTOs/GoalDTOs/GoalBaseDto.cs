@@ -10,5 +10,6 @@ namespace FitnessPal.Application.DTOs.GoalDTOs
         public double TargetFats { get; set; }
         public double TargetWeight { get; set; }
         public GoalType Type { get; set; }
+        public ActivityLevel ActivityLevel { get; set; }
     }
 }

@@ -54,6 +54,15 @@ namespace FitnessPal.API.Controllers
             return Ok(response);
         }
 
+        // POST: api/Goals/initial
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("initial")]
+        public async Task<ActionResult> PostInitialGoal([FromBody] InitialGoalCreateDto goal)
+        {
+            var response = await _mediator.Send(new CreateInitialGoalCommand { InitialGoalCreateDto = goal, UserId = CurrentUserId });
+            return Ok(response);
+        }
+
         // DELETE: api/Goals/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGoal(int id)
