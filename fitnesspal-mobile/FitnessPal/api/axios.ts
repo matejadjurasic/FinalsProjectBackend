@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { APIError } from '../lib/types';
+import { APIError } from '../constants/types';
 
 const apiClient = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL, 
