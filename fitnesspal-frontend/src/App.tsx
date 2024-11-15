@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link,Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes,Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from './store';
-import Login from './components/Login';
-import Register from './components/Register';
+import Login from './components/auth/login/Login';
+import Register from './components/auth/register/Register';
+import Onboarding from './components/auth/onboarding/Onboarding';
 import Home from './components/Home';
-import RequireAuth from './components/RequireAuth';
+import RequireAuth from './components/auth/RequireAuth';
 import './App.css';
 
 function App() {
@@ -13,26 +14,6 @@ function App() {
 
   return (
     <Router>
-    <nav className="p-4 bg-blue-600">
-    <div className="container mx-auto">
-          <Link to="/" className="text-white hover:underline">
-            Home
-          </Link>
-          {!token && (
-            <>
-              {' '}
-              |{' '}
-              <Link to="/login" className="text-white hover:underline">
-                Login
-              </Link>{' '}
-              |{' '}
-              <Link to="/register" className="text-white hover:underline">
-                Register
-              </Link>
-            </>
-          )}
-        </div>
-    </nav>
       <Routes>
         {/* Protected Route */}
         <Route
@@ -42,7 +23,15 @@ function App() {
               <Home />
             </RequireAuth>
           }
-      />
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <RequireAuth>
+              <Onboarding />
+            </RequireAuth>
+          }
+        />
       {/* Public Routes */}
       <Route
         path="/login"

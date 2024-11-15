@@ -1,16 +1,9 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import apiClient from '../../api/axios';
-import {
-  User,
-  AuthState,
-  LoginCredentials,
-  RegisterData,
-  APIError,
-} from '../../types/auth';
+import { User, AuthState, LoginCredentials, RegisterData, APIError } from '../../lib/types';
 
 const tokenFromStorage = localStorage.getItem('token');
 const userFromStorage = localStorage.getItem('user');
-
 
 const initialState: AuthState = {
     user: userFromStorage ? JSON.parse(userFromStorage) : null,
