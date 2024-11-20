@@ -24,6 +24,32 @@
   color: white;
 }
 
+nav {
+  position: absolute; 
+  width: 100%; 
+  z-index: 10;
+}
+
+.carousel {
+  width: 100%;
+}
+
+.carousel img {
+  width: 100%; 
+}
+
+.accordion-button {
+  background-color: gray !important;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #212529;
+}
+
 .App-link {
   color: #61dafb;
 }

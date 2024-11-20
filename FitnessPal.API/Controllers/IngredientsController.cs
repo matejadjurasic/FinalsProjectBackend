@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FitnessPal.API.Controllers
 {
-    [Authorize(Policy = "Admin")]
+    //[Authorize(Policy = "Admin")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class IngredientsController : ControllerBase
