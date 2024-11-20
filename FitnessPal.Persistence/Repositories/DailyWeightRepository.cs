@@ -23,6 +23,7 @@ namespace FitnessPal.Persistence.Repositories
         {
             return await _appDbContext.DailyWeights
                 .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.DateTime)
                 .ToListAsync();
         }
 

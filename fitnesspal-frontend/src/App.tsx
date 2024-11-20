@@ -8,6 +8,10 @@ import Onboarding from './components/auth/onboarding/Onboarding';
 import Home from './components/Home';
 import RequireAuth from './components/auth/RequireAuth';
 import './App.css';
+import Log from './components/Log';
+import Stats from './components/Stats';
+import Profile from './components/Profile';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const { token } = useSelector((state: RootState) => state.auth);
@@ -29,6 +33,30 @@ function App() {
           element={
             <RequireAuth>
               <Onboarding />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/log"
+          element={
+            <RequireAuth>
+              <Log />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/stats"
+          element={
+            <RequireAuth>
+              <Stats />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <Profile />
             </RequireAuth>
           }
         />

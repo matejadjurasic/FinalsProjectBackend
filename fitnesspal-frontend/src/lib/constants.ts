@@ -31,3 +31,16 @@ export enum MEAL_TYPE {
     SNACK = 'Snack',
     OTHER = 'Other'
 }
+
+export const NAV_ITEMS = [
+    { label: 'Home', path: '/' },
+    { label: 'Log', path: '/log' },
+    { label: 'Stats', path: '/stats' },
+];
+
+export const DEFAULT_TARGETS = {
+    targetCalories: 2000,
+    targetProtein: 50,
+    targetFats: 70,
+    targetCarbs: 300,
+};
