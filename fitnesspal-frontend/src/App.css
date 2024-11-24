@@ -39,7 +39,7 @@ nav {
 }
 
 .accordion-button {
-  background-color: gray !important;
+  background-color: rgb(26, 140, 134) !important;
 }
 
 .accordion-button:focus {
@@ -47,7 +47,7 @@ nav {
 }
 
 .accordion-button:not(.collapsed) {
-  color: #212529;
+  color: #81a9d0;
 }
 
 .App-link {

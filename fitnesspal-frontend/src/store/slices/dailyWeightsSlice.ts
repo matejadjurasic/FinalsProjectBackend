@@ -99,6 +99,10 @@ const dailyWeightsSlice = createSlice({
             state.successMessage = null;
             state.validationErrors = null;
         },
+        clearDailyWeightErrors(state) { 
+            state.error = null;
+            state.validationErrors = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -206,5 +210,5 @@ const dailyWeightsSlice = createSlice({
     },
 });
 
-export const { clearDailyWeightsState } = dailyWeightsSlice.actions;
+export const { clearDailyWeightsState, clearDailyWeightErrors } = dailyWeightsSlice.actions;
 export default dailyWeightsSlice.reducer;

@@ -5,12 +5,12 @@ import { RootState } from './store';
 import Login from './components/auth/login/Login';
 import Register from './components/auth/register/Register';
 import Onboarding from './components/auth/onboarding/Onboarding';
-import Home from './components/Home';
+import Home from './components/home/Home';
 import RequireAuth from './components/auth/RequireAuth';
 import './App.css';
-import Log from './components/Log';
-import Stats from './components/Stats';
-import Profile from './components/Profile';
+import Log from './components/logPage/Log';
+import Stats from './components/stats/Stats';
+import Profile from './components/profile/Profile';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
