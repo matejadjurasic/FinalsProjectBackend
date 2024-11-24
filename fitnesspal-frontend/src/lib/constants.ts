@@ -1,3 +1,5 @@
+import { Goal } from "./types";
+
 export enum USER_ROLES {
     ADMIN = 'Admin',
     CLIENT = 'Client',
@@ -43,4 +45,13 @@ export const DEFAULT_TARGETS = {
     targetProtein: 50,
     targetFats: 70,
     targetCarbs: 300,
+};
+
+export const initialGoalData: Omit<Goal, 'id'> = {
+    TargetCalories: 0,
+    TargetProtein: 0,
+    TargetCarbs: 0,
+    TargetFats: 0,
+    TargetWeight: 0,
+    Type: GOAL_TYPE.MAINTENANCE,
 };

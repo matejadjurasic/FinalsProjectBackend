@@ -5,6 +5,8 @@ import { logout } from '../../store/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
+import { useAuth } from '../../hooks/useAuth';
+import { getFirstLetterOfUser } from '../../lib/utils';
 
 interface NavbarProps {
     items : { label: string, path: string }[];
@@ -15,6 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({items}) => {
     const navigate = useNavigate();
     const [isUserMenuOpen, setUserMenuOpen] = useState(false);
     const userMenuRef = useRef<HTMLDivElement>(null);
+    const { user } = useAuth();
 
     const toggleUserMenu = () => setUserMenuOpen((prev) => !prev);
 
@@ -40,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({items}) => {
     <nav className="flex items-center justify-between p-4 bg-gray-900 text-white bg-opacity-30 absolute w-full">
       <div className="flex space-x-4">
         {items.map((item) => (
-          <Link key={item.label} to={item.path} className="text-gray-100 hover:text-gray-300 no-underline">
+          <Link key={item.label} to={item.path} className="text-xl font-semibold text-gray-100 hover:text-gray-400 no-underline">
             {item.label}
           </Link>
         ))}
@@ -49,14 +52,14 @@ const Navbar: React.FC<NavbarProps> = ({items}) => {
         <Button 
             onClick={toggleUserMenu} 
             className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-white">
-                U 
+            <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-white">
+              {getFirstLetterOfUser(user)} 
             </div>
         </Button>
         <Dropdown isOpen={isUserMenuOpen} onClose={() => setUserMenuOpen(false)} direction='right'>
           <Link to="/profile" className='no-underline'>
               <Button 
-                  className="text-gray-800 block w-full text-left px-4 py-2 hover:bg-gray-200">
+                  className="text-gray-900 block w-full text-left px-4 py-2 hover:bg-gray-200">
                   Edit User
               </Button>
           </Link>

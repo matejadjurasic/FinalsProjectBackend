@@ -5,6 +5,8 @@ import { fetchIngredients } from '../../store/slices/ingredientsSlice';
 import { Meal, MealItem, Ingredient } from '../../lib/types';
 import { AppDispatch } from '../../store';
 import { fetchMealById } from '../../store/slices/mealsSlice';
+import Button from '../common/Button';
+import ErrorDisplay from '../error/ErrorDisplay';
 
 interface MealModalProps {
     mealId: number;
@@ -18,6 +20,8 @@ const MealModal: React.FC<MealModalProps> = ({ mealId, onClose }) => {
     const ingredients = useSelector((state: any) => state.ingredients.ingredients);
     const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
     const [amount, setAmount] = useState<number>(0);
+    const errors = useSelector((state: any) => state.mealItems.error);
+    const validationErrors = useSelector((state: any) => state.mealItems.validationError);
 
     useEffect(() => {
         if (mealId) {
@@ -28,15 +32,14 @@ const MealModal: React.FC<MealModalProps> = ({ mealId, onClose }) => {
     }, [dispatch, mealId]);
 
     const handleAddMealItem = () => {
-        if (meal && selectedIngredientId && amount > 0) {
+        if (meal && selectedIngredientId) {
             const newMealItem: MealItem = {
                 amount,
                 mealId: meal.id,
                 ingredientId: selectedIngredientId,
             };
             dispatch(createMealItem(newMealItem)).then(() => {
-                // Refetch meals after adding the meal item
-                dispatch(fetchMealById(meal.id)); // Pass the correct date
+                dispatch(fetchMealById(meal.id)); 
             });
             setSelectedIngredientId(null);
             setAmount(0);
@@ -55,15 +58,15 @@ const MealModal: React.FC<MealModalProps> = ({ mealId, onClose }) => {
     if (!meal) return null;
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded shadow-md w-96">
-                <span className="close cursor-pointer" onClick={onClose}>&times;</span>
+        <div className="fixed z-40 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-gray-800 text-gray-100 p-6 rounded shadow-md w-96">
                 <h2 className="text-lg font-bold mb-4">{meal.mealType}</h2>
                 <p>Calories: {Math.round(meal.calories)}</p>
                 <p>Protein: {Math.round(meal.protein)}g</p>
                 <p>Carbs: {Math.round(meal.carbs)}g</p>
                 <p>Fat: {Math.round(meal.fat)}g</p>
-                <h3 className="text-md font-semibold mt-4">Meal Items</h3>
+                <h3 className="text-md font-semibold mt-4">Meal Items:</h3>
+                <ErrorDisplay error={errors} validationErrors={validationErrors}/>
                 <ul className="mb-4">
                 {mealItems.map((item: MealItem) => {
                         const ingredient = ingredients.find((ing: Ingredient) => ing.id === item.ingredientId);
@@ -86,7 +89,7 @@ const MealModal: React.FC<MealModalProps> = ({ mealId, onClose }) => {
                 <select
                     onChange={(e) => setSelectedIngredientId(Number(e.target.value))}
                     value={selectedIngredientId || ''}
-                    className="border rounded p-2 mb-2 w-full"
+                    className="text-gray-900 border rounded p-2 mb-2 w-full"
                 >
                     <option value="" disabled>Select Ingredient</option>
                     {ingredients.map((ingredient:Ingredient) => (
@@ -98,11 +101,11 @@ const MealModal: React.FC<MealModalProps> = ({ mealId, onClose }) => {
                     value={amount}
                     onChange={(e) => setAmount(Number(e.target.value))}
                     placeholder="Amount in grams"
-                    className="border rounded p-2 mb-4 w-full"
+                    className="text-gray-900 border rounded p-2 mb-4 w-full"
                 />
                 <div className="flex justify-end">
-                    <button type="button" onClick={onClose} className="mr-2 text-gray-500">Cancel</button>
-                    <button onClick={handleAddMealItem} className="bg-blue-500 text-white rounded px-4 py-2">Add Meal Item</button>
+                    <Button type="button" onClick={onClose} className="mr-2 text-gray-500">Cancel</Button>
+                    <Button onClick={handleAddMealItem} variant='primary'>Add Meal Item</Button>
                 </div>
             </div>
         </div>
