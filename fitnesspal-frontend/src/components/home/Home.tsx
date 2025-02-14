@@ -5,7 +5,7 @@ import { fetchGoals } from '../../store/slices/goalsSlice';
 import { fetchMeals } from '../../store/slices/mealsSlice';
 import { AppDispatch } from '../../store';
 import { useLocation } from 'react-router-dom';
-import { fetchDailyWeightByDate,clearDailyWeightsState } from '../../store/slices/dailyWeightsSlice';
+import { fetchDailyWeightByDate,clearDailyWeightsState, clearDailyWeightErrors } from '../../store/slices/dailyWeightsSlice';
 import AddWeightModal from './AddWeightModal';
 import { getTodaysDate, calculateMealTotals, getWeightTrackingMessage } from '../../lib/utils';
 import { NAV_ITEMS } from '../../lib/constants';
@@ -40,6 +40,11 @@ export default function Home() {
     setTotals(newTotals);
   }, [meals]);
 
+  const OpenModal = () => {
+    dispatch(clearDailyWeightErrors());
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="flex flex-col bg-gray-100">
         <Navbar items={NAV_ITEMS} />
@@ -51,7 +56,7 @@ export default function Home() {
           <WelcomeText />
           <DailyProgress totals={totals}/>
         </div>
-        <DailyWeight message={message} onAddWeight={() => setIsModalOpen(true)} />
+        <DailyWeight message={message} onAddWeight={() => OpenModal()} />
       </div>
       <AddWeightModal
                 isOpen={isModalOpen}

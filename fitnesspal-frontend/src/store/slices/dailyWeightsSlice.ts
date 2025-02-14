@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import apiClient from '../../api/axios';
 import { DailyWeight, DailyWeightsState, APIError } from '../../lib/types';
 
@@ -165,7 +165,7 @@ const dailyWeightsSlice = createSlice({
                 state.loading = false;
                 state.successMessage = 'Daily weight created successfully!';
             })
-            .addCase(createDailyWeight.rejected, (state, action) => {
+            .addCase(createDailyWeight.rejected, (state, action: PayloadAction<APIError | undefined>) => {
                 state.loading = false;
                 state.error = action.payload?.errorMessage || 'An error occurred.';
                 state.validationErrors = action.payload?.validationErrors || null;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FitnessPal.Application.Contracts.Persistence;
+using FitnessPal.Application.Exceptions;
 using FitnessPal.Application.Features.MealItems.Requests.Commands;
 using FitnessPal.Domain.Models;
 using MediatR;
@@ -25,6 +26,9 @@ namespace FitnessPal.Application.Features.MealItems.Handlers.Commands
         public async Task<int> Handle(CreateMealItemCommand request, CancellationToken cancellationToken)
         {
             var mealItem = _mapper.Map<MealItem>(request.MealItemCreateDto);
+            var exists = await _unitOfWork.MealItemRepository.MealItemExists(mealItem.MealId, mealItem.IngredientId);
+            if(exists) throw new ItemAlreadyExistsException("MealItem already exists");
+
             var ingredient = await _unitOfWork.IngredientRepository.GetAsync(mealItem.IngredientId);
             var meal = await _unitOfWork.MealRepository.GetAsync(mealItem.MealId);
 

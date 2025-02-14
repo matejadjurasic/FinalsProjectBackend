@@ -11,5 +11,6 @@ namespace FitnessPal.Application.Contracts.Persistence
     {
         Task<MealItem> GetMealItem(int mealId, int IngredientId);
         Task<List<MealItem>> GetMealItems(int mealId);
+        Task<bool> MealItemExists(int mealId, int ingredientId);
     }
 }

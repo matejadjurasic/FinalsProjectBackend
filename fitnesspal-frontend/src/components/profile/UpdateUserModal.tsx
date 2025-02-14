@@ -18,7 +18,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ isOpen, onClose, user
     const dispatch = useDispatch<AppDispatch>();
     const [updatedUser, setUpdatedUser] = useState<User>(user);
     const errors = useSelector((state: any) => state.users.error);
-    const validationErrors = useSelector((state: any) => state.users.validationError);
+    const validationErrors = useSelector((state: any) => state.users.validationErrors);
 
     useEffect(() => {
         setUpdatedUser(user);
@@ -47,7 +47,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ isOpen, onClose, user
     if (!isOpen || !user) return null;
 
     return (
-        <div className="text-black z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="text-black z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-auto">
             <div className="bg-gray-800 p-6 rounded shadow-md w-96">
                 <h2 className="text-lg text-gray-100 font-bold mb-4">Update User Info</h2>
                 <ErrorDisplay error={errors} validationErrors={validationErrors}/>
