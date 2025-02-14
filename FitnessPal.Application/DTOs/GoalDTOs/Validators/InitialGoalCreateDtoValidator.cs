@@ -28,6 +28,9 @@ namespace FitnessPal.Application.DTOs.GoalDTOs.Validators
 
             RuleFor(x => x.Type)
                 .IsInEnum().WithMessage("Invalid goal type.");
+
+            RuleFor(x => x.TargetWeight)
+                .InclusiveBetween(1, 250).WithMessage("TargetWeight must be between 1 and 250 kg");
         }
     }
 }

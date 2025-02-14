@@ -14,7 +14,7 @@ namespace FitnessPal.Application.DTOs.DailyWeightDTOs.Validators
                 .WithMessage("Daily weight entries can only be made for today.");
 
             RuleFor(x => x.Weight)
-                .GreaterThan(0).WithMessage("Weight must be greater than zero.");
+                .InclusiveBetween(1, 250).WithMessage("Weight must be between 1 and 250 kg");
         }
     }
 }

@@ -21,7 +21,7 @@ const MealModal: React.FC<MealModalProps> = ({ mealId, onClose }) => {
     const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
     const [amount, setAmount] = useState<number>(0);
     const errors = useSelector((state: any) => state.mealItems.error);
-    const validationErrors = useSelector((state: any) => state.mealItems.validationError);
+    const validationErrors = useSelector((state: any) => state.mealItems.validationErrors);
 
     useEffect(() => {
         if (mealId) {

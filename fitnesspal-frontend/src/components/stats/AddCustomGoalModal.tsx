@@ -16,7 +16,7 @@ interface AddCustomGoalModalProps {
 const AddCustomGoalModal: React.FC<AddCustomGoalModalProps> = ({ isOpen, onClose }) => {
     const dispatch = useDispatch<AppDispatch>();
     const errors = useSelector((state: any) => state.goals.error);
-    const validationErrors = useSelector((state: any) => state.goals.validationError);
+    const validationErrors = useSelector((state: any) => state.goals.validationErrors);
     const loading = useSelector((state: any) => state.goals.loading);
     const [goalData, setGoalData] = useState<Omit<Goal, 'id'>>(initialGoalData);
 

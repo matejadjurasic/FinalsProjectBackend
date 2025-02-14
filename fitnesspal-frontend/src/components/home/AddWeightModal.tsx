@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearDailyWeightErrors, createDailyWeight } from '../../store/slices/dailyWeightsSlice';
 import { AppDispatch } from '../../store';
@@ -15,11 +15,7 @@ const AddWeightModal: React.FC<AddWeightModalProps> = ({ isOpen, onClose, date }
     const [weight, setWeight] = useState<number | ''>('');
     const dispatch = useDispatch<AppDispatch>();
     const errors = useSelector((state: any) => state.dailyWeights.error);
-    const validationErrors = useSelector((state: any) => state.dailyWeights.validationError);
-
-    useEffect(() => {
-        dispatch(clearDailyWeightErrors());
-    }, [dispatch]);
+    const validationErrors = useSelector((state: any) => state.dailyWeights.validationErrors);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

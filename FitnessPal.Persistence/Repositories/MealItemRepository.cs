@@ -38,5 +38,11 @@ namespace FitnessPal.Persistence.Repositories
 
             return mealItems;
         }
+
+        public async Task<bool> MealItemExists(int mealId, int ingredientId)
+        {
+            return await _appDbContext.MealItems
+                .AnyAsync(m => m.MealId == mealId && m.IngredientId == ingredientId);
+        }
     }
 }
