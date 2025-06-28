@@ -1,5 +1,7 @@
 ﻿using FitnessPal.Application.Contracts.Infrastructure;
+using FitnessPal.Application.Features.Auth.Requests.Commands;
 using FitnessPal.Application.Models.Identity;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,18 +11,18 @@ namespace FitnessPal.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IMediator _mediator;
 
 
-        public AuthController(IAuthService authService)
+        public AuthController(IMediator mediator)
         {
-            _authService = authService;
+            _mediator = mediator;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationRequest model)
         {
-            await _authService.Register(model);
+            await _mediator.Send(new RegisterCommand { RegistrationRequest = model });
             return Ok("User registered successfully");
         }
 
@@ -28,7 +30,7 @@ namespace FitnessPal.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AuthRequest model)
         {
-            var authResponse = await _authService.Login(model);
+            var authResponse = await _mediator.Send(new LoginCommand { authRequest = model });
             return Ok(authResponse);
         }
     }

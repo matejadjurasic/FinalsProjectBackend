@@ -13,6 +13,7 @@ import { NAV_ITEMS } from '../../lib/constants';
 import { createChartData } from '../../lib/utils';
 import AddCustomGoalModal from './AddCustomGoalModal';
 import CalculatorGoalModal from './CalculatorGoalModal';
+import ErrorDisplay from '../error/ErrorDisplay';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -23,6 +24,8 @@ const Stats: React.FC = () => {
     const [chartData, setChartData] = useState<any>(createChartData(dailyWeights));
     const [isAddGoalModalOpen, setAddGoalModalOpen] = useState(false); 
     const [isCalculatorGoalModalOpen, setCalculatorGoalModalOpen] = useState(false);
+    const errors = useSelector((state: any) => state.goals.error);
+    const validationErrors = useSelector((state: any) => state.goals.validationErrors);
 
     useEffect(() => {
         dispatch(fetchDailyWeights());
@@ -47,6 +50,7 @@ const Stats: React.FC = () => {
                 </div>
 
                 <div className="w-full md:w-1/3 p-8 bg-gray-800 overflow-y-auto">
+                    <ErrorDisplay error={errors} validationErrors={validationErrors}/>
                     <h3 className="text-2xl font-bold text-gray-100">Goals</h3>
                     {goals.length > 0 ? (
                         <div className="text-gray-100">

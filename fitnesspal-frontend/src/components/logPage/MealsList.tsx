@@ -2,6 +2,8 @@ import React from 'react';
 import { Meal } from '../../lib/types';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from '../common/Button';
+import { useSelector } from 'react-redux';
+import ErrorDisplay from '../error/ErrorDisplay';
 
 interface MealsListProps {
     meals: Meal[];
@@ -11,11 +13,15 @@ interface MealsListProps {
 }
 
 const MealsList: React.FC<MealsListProps> = ({ meals, loading, onDeleteMeal, onOpenModal }) => {
+    const errors = useSelector((state: any) => state.meals.error);
+    const validationErrors = useSelector((state: any) => state.meals.validationErrors);
+
     return (
         <div className="w-full md:w-2/3 p-8 overflow-y-auto bg-gray-800"> 
             <h3 className="text-xl font-bold text-gray-100">Meals:</h3>
+            <ErrorDisplay error={errors} validationErrors={validationErrors}/>
             {loading ? (
-                <p>Loading meals...</p>
+                <p style={{ color: 'white' }}>Loading meals...</p>
             ) : (
                 <Accordion defaultActiveKey="0">
                     {meals.map((meal: Meal, index: number) => (

@@ -11,7 +11,7 @@ namespace FitnessPal.Application.Profiles
             CreateMap<MealItem, MealItemReadDto>().ReverseMap();
             CreateMap<MealItem, MealItemCreateDto>().ReverseMap()
                 .ForMember(dest => dest.Meal, opt => opt.Ignore())
-                .ForMember(dest => dest.Ingredient, opt => opt.Ignore()); ;
+                .ForMember(dest => dest.Ingredient, opt => opt.Ignore());
             CreateMap<MealItem, MealItemUpdateDto>().ReverseMap();
         }
     }
