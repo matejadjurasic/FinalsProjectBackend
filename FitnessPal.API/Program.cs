@@ -4,8 +4,15 @@ using FitnessPal.Infrastructure;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using FitnessPal.API.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/FitnessPalLogs.txt", rollingInterval: RollingInterval.Day));
 
 // Add services to the container.
 builder.Services.ConfigureApplicationServices();

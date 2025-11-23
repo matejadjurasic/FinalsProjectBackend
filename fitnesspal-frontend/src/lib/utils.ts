@@ -2,7 +2,7 @@ import { DEFAULT_TARGETS } from './constants';
 import { DailyWeight, User } from './types';
 
 export const getTodaysDate = (): string => {
-    return new Date().toISOString().split('T')[0];
+    return new Date().toISOString();
 };
 
 export const calculateMealTotals = (meals: { calories: number; protein: number; fat: number; carbs: number }[]): { calories: number; protein: number; fat: number; carbs: number } => {
