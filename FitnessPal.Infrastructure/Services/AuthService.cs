@@ -4,11 +4,7 @@ using FitnessPal.Application.Models.Identity;
 using FitnessPal.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace FitnessPal.Infrastructure.Services
 {
@@ -17,19 +13,23 @@ namespace FitnessPal.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly JwtSettings _jwtSettings;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(UserManager<User> userManager,IOptions<JwtSettings> jwtSettings, ITokenService tokenService)
+        public AuthService(UserManager<User> userManager,IOptions<JwtSettings> jwtSettings, ITokenService tokenService, ILogger<AuthService> logger)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings.Value;
             _tokenService = tokenService;
+            _logger = logger;
         }
 
         public async Task<AuthResponse> Login(AuthRequest request)
         {
+            _logger.LogInformation("Authenticating user with email: {Email}", request.Email);
             var user = await _userManager.FindByEmailAsync(request.Email);
             if(user != null && await _userManager.CheckPasswordAsync(user, request.Password))
             {
+                _logger.LogInformation("User {UserId} authenticated successfully", user.Id);
                 var roles = await _userManager.GetRolesAsync(user);
                 var token = await _tokenService.GenerateToken(user);
 
@@ -44,9 +44,10 @@ namespace FitnessPal.Infrastructure.Services
                     Gender = user.Gender,
                     Username = user.UserName!,
                     Token = token,
-                    Roles = roles.ToList()
+                    Roles = [.. roles]
                 };
             }
+            _logger.LogWarning("Failed authentication attempt for email: {Email}", request.Email);
             throw new AuthenticationException("Ivalid Credentials");
         }
 

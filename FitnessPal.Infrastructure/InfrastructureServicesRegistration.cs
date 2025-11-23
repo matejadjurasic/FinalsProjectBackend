@@ -5,11 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FitnessPal.Infrastructure
 {
@@ -22,7 +18,7 @@ namespace FitnessPal.Infrastructure
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<INutritionCalculatorService, NutritionCalculatorService>();
-            services.AddTransient<IAuthService, AuthService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddAuthentication(options =>
             {

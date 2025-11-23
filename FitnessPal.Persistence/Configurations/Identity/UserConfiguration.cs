@@ -1,13 +1,7 @@
-﻿using FitnessPal.Application.Models.Identity;
-using FitnessPal.Domain.Models;
+﻿using FitnessPal.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitnessPal.Persistence.Configurations.Identity
 {
@@ -35,7 +29,7 @@ namespace FitnessPal.Persistence.Configurations.Identity
                 NormalizedUserName = "CLIENT"
             };
 
-            PasswordHasher<User> ph = new PasswordHasher<User>();
+            PasswordHasher<User> ph = new();
             admin.PasswordHash = ph.HashPassword(admin, "admin123");
             client.PasswordHash = ph.HashPassword(client, "client123");
 
