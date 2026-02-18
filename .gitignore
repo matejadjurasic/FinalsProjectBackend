@@ -361,3 +361,26 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+##
+## Docker & Environment Variables
+##
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
+
+# Environment Variables (SECURITY: Never commit sensitive data!)
+.env
+.env.*
+!.env.example
+
+# Docker volumes and data
+**/data/
+**/postgres-data/
+**/backend-data/
+**/pgadmin-data/
+
+# Docker logs
+docker-logs/
+*.docker.log

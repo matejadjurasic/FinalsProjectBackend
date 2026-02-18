@@ -1,0 +1,103 @@
+name: fitnesspal-application
+
+services:
+  # PostgreSQL Database Service
+  database:
+    image: postgres:16-alpine
+    container_name: fitnesspal-postgres
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    networks:
+      - fitnesspal-network
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    restart: unless-stopped
+
+  # Backend API Service (.NET 8)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fitnesspal-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__ExpireMinutes=${JWT_EXPIRE_MINUTES}
+    volumes:
+      - ./FitnessPal.API/logs:/app/logs
+      - backend-data:/app/data
+    networks:
+      - fitnesspal-network
+    ports:
+      - "${BACKEND_PORT}:80"
+    depends_on:
+      - database
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend Service (React)
+  frontend:
+    build:
+      context: ./fitnesspal-frontend
+      dockerfile: Dockerfile
+    container_name: fitnesspal-frontend
+    environment:
+      - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
+    networks:
+      - fitnesspal-network
+    ports:
+      - "${FRONTEND_PORT}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # PgAdmin Service (Optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: fitnesspal-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+      - PGADMIN_LISTEN_PORT=80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - fitnesspal-network
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      - database
+    restart: unless-stopped
+    profiles:
+      - tools
+
+networks:
+  fitnesspal-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  backend-data:
+    driver: local
+  pgadmin-data:
+    driver: local
