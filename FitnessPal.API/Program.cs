@@ -89,4 +89,12 @@ app.UseCors("CorsPolicy");
 
 app.MapControllers();
 
+// Health check endpoint for Docker
+app.MapGet("/health", () => Results.Ok(new 
+{ 
+    status = "Healthy", 
+    timestamp = DateTime.UtcNow,
+    environment = app.Environment.EnvironmentName
+}));
+
 app.Run();
