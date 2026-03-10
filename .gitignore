@@ -368,7 +368,6 @@ FodyWeavers.xsd
 
 # Docker
 *.dockerignore
-docker-compose.override.yml
 
 # Environment Variables (SECURITY: Never commit sensitive data!)
 .env
