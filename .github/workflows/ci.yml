@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-frontend:
+    name: Build Frontend (React)
+    runs-on: windows-latest
+
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.pull_request.merged == true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: fitnesspal-frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: fitnesspal-frontend
+        run: npm install
+
+      - name: Build React application
+        working-directory: fitnesspal-frontend
+        run: npm run build
+
+      - name: Verify build output exists
+        working-directory: fitnesspal-frontend
+        shell: pwsh
+        run: |
+          if (Test-Path -Path "build") {
+            Write-Host "Build folder exists – frontend build succeeded."
+          } else {
+            Write-Error "Build folder not found – frontend build may have failed."
+            exit 1
+          }
+          
+  build-backend:
+    name: Build Backend (.NET)
+    runs-on: windows-latest
+
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.pull_request.merged == true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore NuGet dependencies
+        run: dotnet restore FitnessPal.sln
+
+      - name: Build solution (Release)
+        run: dotnet build FitnessPal.sln --configuration Release --no-restore
+
+      - name: Confirm backend build completed
+        shell: pwsh
+        run: |
+          Write-Host "Backend build completed successfully."
+
+  verification:
+    name: Verification
+    runs-on: windows-latest
+    needs: [build-frontend, build-backend]
+
+    steps:
+      - name: Frontend build status
+        shell: pwsh
+        run: Write-Host "Frontend build completed successfully."
+
+      - name: Backend build status
+        shell: pwsh
+        run: Write-Host "Backend build completed successfully."
+
+      - name: CI workflow status
+        shell: pwsh
+        run: Write-Host "CI workflow finished successfully."
