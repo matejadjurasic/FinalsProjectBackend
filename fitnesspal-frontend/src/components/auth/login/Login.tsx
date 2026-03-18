@@ -23,7 +23,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         {successMessage && <p className="text-green-500 text-center">{successMessage}</p>}
         <LoginForm />
-        <p className="text-sm text-center text-gray-400">
+        <p className="text-center text-gray-400">
           Don't have an account?{' '}
           <a href="/register" className="text-blue-400 hover:underline hover:text-blue-300">
             Register
